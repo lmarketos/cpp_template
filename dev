@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import argparse
+import subprocess
+
+docker = "cpp_sandbox/cpp_build:0.1"
+docker_shell = "docker run -a stdout -a stderr -w /src --rm --name=build --mount type=bind,source=${PWD},target=/src " 
+
+def build(args):
+        command = "/bin/bash -c \"mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=.. && make && make install\""
+        print(docker_shell + " " + command)
+        subprocess.run(docker_shell + " " + command, shell=True,check=False,executable='/bin/bash')
+
+def build_docker(args):
+    command = "pwd && docker build -t " + docker + " -f ./docker/Dockerfile ."
+    subprocess.run(command, shell=True,check=True,executable='/bin/bash')
+
+def shell(args):
+    command = " docker run -it --rm --name=build --mount type=bind,source=${PWD},target=/src " + docker + " bash"
+    subprocess.run(command, shell=True,check=True,executable='/bin/bash')
+
+def clean(args):
+    command = "rm -rf build && rm -rf bin"
+    subprocess.run(command, shell=True,check=True,executable='/bin/bash')
+
+parser = argparse.ArgumentParser(add_help=True, description='Execute various dev related commands.')
+
+sp = parser.add_subparsers(dest='command', help='Command')
+
+sp_build_docker = sp.add_parser('build_docker', help='Build the cpp_build docker image')
+sp_build_docker.set_defaults(func=build_docker)
+
+sp_build = sp.add_parser('build', help='Build all executables in the project')
+sp_build.set_defaults(func=build)
+
+sp_clean = sp.add_parser('clean', help='Remove the build and bin directories')
+sp_clean.set_defaults(func=clean)
+
+sp_shell = sp.add_parser('shell', help='Open interactive bash shell in the build docker')
+sp_shell.set_defaults(func=shell)
+
+parser.add_argument('docker', nargs='?', help='Optional target docker to use; default is ' + docker)
+args = parser.parse_args()
+
+if args.docker:
+    docker = args.docker
+
+docker_shell = docker_shell + docker
+
+args.func(args)
