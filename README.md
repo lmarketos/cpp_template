@@ -10,7 +10,7 @@ Build the docker image used to compile the application and run analysis tools
 ```
 ./dev build_docker
 ```
-Build the sample application
+Build the sample application. Note that the docker mounts the root dir of the repo so files are never copied into the build docker. You can edit your source locally in the repo
 ```
 ./dev build
 ```
@@ -32,3 +32,4 @@ Run a bash shell in the build docker
  - run clang-tidy
  - run cppcheck
  - hooks for clang-format
+ - fix mounted dir to match local system to give proper paths in error messages and allow tools to parse the errors correctly
