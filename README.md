@@ -29,9 +29,4 @@ For a complete list of options
 ## To Do
  - add unit test
  - run unit test
- - set build options
- - set clang build
- - set gcc build
- - run clang-tidy
- - run cppcheck
- - hooks for clang-format
+ - code coverage
