@@ -4,7 +4,7 @@ import argparse
 import subprocess
 
 docker = "cpp_sandbox/cpp_build:0.1"
-docker_shell = "docker run -a stdout -a stderr -w /src --rm --name=build --mount type=bind,source=${PWD},target=/src " 
+docker_shell = "docker run -a stdout -a stderr -w ${PWD} --rm --name=build --mount type=bind,source=${PWD},target=${PWD} --user \"$(id -u):$(id -g)\" "
 
 def build(args):
         command = "/bin/bash -c \"mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=.. && make && make install\""
