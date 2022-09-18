@@ -3,48 +3,90 @@
 import argparse
 import subprocess
 
-docker = "cpp_sandbox/cpp_build:0.1"
-docker_shell = "docker run -a stdout -a stderr -w ${PWD} --rm --name=build --mount type=bind,source=${PWD},target=${PWD} --user \"$(id -u):$(id -g)\" "
+def run(cmd):
+    print(cmd)
+    subprocess.run(cmd, shell=True,check=False,executable='/bin/bash')
+
+def build_clang(args):
+    command = compile_command + "clang++ && " + make_command
+    run(docker_shell + " " + command)
+
+def build_gpp(args):
+    command = compile_command + "g++ && " + make_command
+    run(docker_shell + " " + command)
 
 def build(args):
-        command = "/bin/bash -c \"mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=.. && make && make install\""
-        print(docker_shell + " " + command)
-        subprocess.run(docker_shell + " " + command, shell=True,check=False,executable='/bin/bash')
+    command = compile_command + compiler + " && " + make_command
+    run(docker_shell + " " + command)
 
 def build_docker(args):
     command = "pwd && docker build -t " + docker + " -f ./docker/Dockerfile ."
-    subprocess.run(command, shell=True,check=True,executable='/bin/bash')
+    run(command)
 
 def shell(args):
-    command = " docker run -it --rm --name=build --mount type=bind,source=${PWD},target=/src " + docker + " bash"
-    subprocess.run(command, shell=True,check=True,executable='/bin/bash')
+    command = " docker run -it " + docker_args + " " + docker + " bash"
+    run(command)
 
 def clean(args):
     command = "rm -rf build && rm -rf bin"
-    subprocess.run(command, shell=True,check=True,executable='/bin/bash')
+    run(command)
 
-parser = argparse.ArgumentParser(add_help=True, description='Execute various dev related commands.')
+def set_gpp(args):
+    compiler = "g++"
 
-sp = parser.add_subparsers(dest='command', help='Command')
+def set_clang(args):
+    compiler = "clang++"
 
-sp_build_docker = sp.add_parser('build_docker', help='Build the cpp_build docker image')
-sp_build_docker.set_defaults(func=build_docker)
+def main() :
+    parser = argparse.ArgumentParser(add_help=True, description='Execute various dev related commands.')
 
-sp_build = sp.add_parser('build', help='Build all executables in the project')
-sp_build.set_defaults(func=build)
+    sp = parser.add_subparsers(dest='command', help='Command')
 
-sp_clean = sp.add_parser('clean', help='Remove the build and bin directories')
-sp_clean.set_defaults(func=clean)
+    sp_build_docker = sp.add_parser('build_docker', help='Build the cpp_build docker image')
+    sp_build_docker.set_defaults(func=build_docker)
 
-sp_shell = sp.add_parser('shell', help='Open interactive bash shell in the build docker')
-sp_shell.set_defaults(func=shell)
+    sp_build = sp.add_parser('build', help='Build all executables in the project using ' + compiler)
+    sp_build.set_defaults(func=build)
 
-parser.add_argument('docker', nargs='?', help='Optional target docker to use; default is ' + docker)
-args = parser.parse_args()
+    sp_build_gpp = sp.add_parser('build_g++', help='Build all executables in the project using g++')
+    sp_build_gpp.set_defaults(func=build_gpp)
 
-if args.docker:
-    docker = args.docker
+    sp_build_clang = sp.add_parser('build_clang', help='Build all executables in the project using clang++')
+    sp_build_clang.set_defaults(func=build_clang)
 
-docker_shell = docker_shell + docker
+    sp_clean = sp.add_parser('clean', help='Remove the build and bin directories')
+    sp_clean.set_defaults(func=clean)
 
-args.func(args)
+#    sp_clang = sp.add_parser('compiler-clang++', help='Set clang++ as the compiler. Current is ' + compiler)
+#    sp_clang.set_defaults(func=set_clang)
+
+#    sp_gpp = sp.add_parser('compiler-g++', help='Set g++ as the compiler. Current is ' + compiler)
+#    sp_gpp.set_defaults(func=set_gpp)
+
+    sp_shell = sp.add_parser('shell', help='Open interactive bash shell in the build docker')
+    sp_shell.set_defaults(func=shell)
+
+    global docker
+    parser.add_argument('docker', nargs='?', help='Optional target docker to use; default is ' + docker)
+    args = parser.parse_args()
+
+    if args.docker:
+        docker = args.docker
+
+    global docker_shell
+    docker_shell = docker_shell + " " + docker
+
+    args.func(args)
+
+docker = "cpp_sandbox/cpp_build:0.1"
+docker_args = "-w ${PWD} --rm --name=build --mount type=bind,source=${PWD},target=${PWD}" 
+docker_user = "--user \"$(id -u):$(id -g)\""
+docker_shell_no_user = "docker run -a stdout -a stderr " + docker_args
+docker_shell =  docker_shell_no_user + " " + docker_user
+
+make_command = "make && make install\""
+compiler = "clang++"
+compile_command = "/bin/bash -c \"mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=.. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_STANDARD=23 -DCMAKE_CXX_FLAGS=\"-O3\" -DCMAKE_CXX_COMPILER="
+
+if __name__ == "__main__":
+    main()
