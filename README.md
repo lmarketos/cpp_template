@@ -23,7 +23,6 @@ Run a bash shell in the build docker
 ./dev shell
 ```
 ## To Do
- - switch user in docker commands to prevent files being written as root
  - add unit test
  - run unit test
  - set build options
@@ -32,4 +31,3 @@ Run a bash shell in the build docker
  - run clang-tidy
  - run cppcheck
  - hooks for clang-format
- - fix mounted dir to match local system to give proper paths in error messages and allow tools to parse the errors correctly
