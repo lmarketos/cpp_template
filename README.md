@@ -22,6 +22,10 @@ Run a bash shell in the build docker
 ```
 ./dev shell
 ```
+For a complete list of options
+```
+./dev -h
+```
 ## To Do
  - add unit test
  - run unit test
