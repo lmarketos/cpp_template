@@ -7,17 +7,28 @@ def run(cmd):
     print(cmd)
     subprocess.run(cmd, shell=True,check=False,executable='/bin/bash')
 
+def run_docker(cmd):
+    run(docker_shell + " " + cmd)
+
+def tidy(cmd):
+    command = "/bin/bash -c \"cd build && run-clang-tidy -checks='*,-llvm*,-modernize-use-trailing-return-type' -header-filter=.*\""
+    run_docker(command)
+
+def cppcheck(cmd):
+    command = "cppcheck --project=build/compile_commands.json --inline-suppr --enable=all --suppress=missingIncludeSystem"
+    run_docker(command)
+
 def build_clang(args):
     command = compile_command + "clang++ && " + make_command
-    run(docker_shell + " " + command)
+    run_docker(command)
 
 def build_gpp(args):
     command = compile_command + "g++ && " + make_command
-    run(docker_shell + " " + command)
+    run_docker(command)
 
 def build(args):
     command = compile_command + compiler + " && " + make_command
-    run(docker_shell + " " + command)
+    run_docker(command)
 
 def build_docker(args):
     command = "pwd && docker build -t " + docker + " -f ./docker/Dockerfile ."
@@ -53,6 +64,12 @@ def main() :
 
     sp_build_clang = sp.add_parser('build_clang', help='Build all executables in the project using clang++')
     sp_build_clang.set_defaults(func=build_clang)
+
+    sp_cppcheck = sp.add_parser('cppcheck', help='Run cppcheck on the project')
+    sp_cppcheck.set_defaults(func=cppcheck)
+
+    sp_tidy = sp.add_parser('tidy', help='Run clang-tidy on the project')
+    sp_tidy.set_defaults(func=tidy)
 
     sp_clean = sp.add_parser('clean', help='Remove the build and bin directories')
     sp_clean.set_defaults(func=clean)

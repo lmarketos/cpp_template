@@ -16,6 +16,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     cppcheck \
     python3 \
     clang-tidy \
+    clang-tools \
     clang-format \
     gdb \
     libgtest-dev \
