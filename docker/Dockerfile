@@ -27,6 +27,16 @@ RUN wget https://github.com/ninja-build/ninja/releases/latest/download/ninja-lin
     mv ninja-linux.zip /usr/local/bin/ninja.gz && \
     gunzip /usr/local/bin/ninja.gz && \
     chmod a+x /usr/local/bin/ninja
+RUN git clone https://github.com/google/googletest.git && \
+  cd googletest && \
+  mkdir build && \
+  cd build && \
+  cmake .. && \
+  make && \
+  cp -r /googletest/googlemock/include/gmock /usr/local/include/gmock && \
+  cp -r /googletest/googletest/include/gtest /usr/local/include/gtest && \
+  mkdir /usr/local/lib/gtest; cp -r /googletest/build/lib/libgtest*.a /usr/local/lib/gtest/ && \
+  mkdir /usr/local/lib/gmock; cp -r /googletest/build/lib/libgmock*.a /usr/local/lib/gmock/
 
  
 

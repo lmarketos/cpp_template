@@ -3,10 +3,13 @@ Sample project with build and unit test support. Self-contained environment for 
 
 Intended to be cloned or used as a template for a starting point for home C++ projects.
 
+The host system only needs git and docker to use this. It can optionally use clang-format in a pre-commit git hook.
+
 ## Getting started
 From the root directory of the repo:
 
 Build the docker image used to compile the application and run analysis tools
+**This command must run successfully before any of the other commands will work**
 ```
 ./dev build_docker
 ```
@@ -27,6 +30,9 @@ For a complete list of options
 ./dev -h
 ```
 ## To Do
- - add unit test
- - run unit test
- - code coverage
+- code coverage
+- ASAN support
+- UBSAN support
+- TSAN support
+- Jenkins support
+- Add a clang-format file

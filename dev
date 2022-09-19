@@ -10,6 +10,10 @@ def run(cmd):
 def run_docker(cmd):
     run(docker_shell + " " + cmd)
 
+def test(cmd):
+    command = "/bin/bash -c \"cd build && ctest\""
+    run_docker(command)
+
 def tidy(cmd):
     command = "/bin/bash -c \"cd build && run-clang-tidy -checks='*,-llvm*,-modernize-use-trailing-return-type' -header-filter=.*\""
     run_docker(command)
@@ -82,6 +86,9 @@ def main() :
 
     sp_shell = sp.add_parser('shell', help='Open interactive bash shell in the build docker')
     sp_shell.set_defaults(func=shell)
+
+    sp_test = sp.add_parser('test', help='Run the unit tests for the project')
+    sp_test.set_defaults(func=test)
 
     global docker
     parser.add_argument('docker', nargs='?', help='Optional target docker to use; default is ' + docker)
