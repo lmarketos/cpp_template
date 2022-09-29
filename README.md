@@ -36,3 +36,4 @@ For a complete list of options
 - TSAN support
 - Jenkins support
 - Add a clang-format file
+- Add performance measuring tools
