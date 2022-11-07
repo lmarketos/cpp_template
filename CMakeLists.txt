@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(CppSandbox)
-add_compile_options(-Wall -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion -Werror)
+add_compile_options(-Werror -Wall -Wextra -Wconversion -pedantic -pedantic-errors -Wconversion -Wsign-conversion)
 
 enable_testing()
 
