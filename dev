@@ -103,7 +103,7 @@ def main() :
     args.func(args)
 
 docker = "cpp_sandbox/cpp_build:0.1"
-docker_args = "-w ${PWD} --rm --name=build --mount type=bind,source=${PWD},target=${PWD}" 
+docker_args = "-w ${PWD} --rm --name=build --mount type=bind,source=${PWD},target=${PWD} --user $(id -u):$(id -g) --volume /etc/passwd:/etc/passwd:ro --volume /etc/group:/etc/group:ro" 
 docker_user = "--user \"$(id -u):$(id -g)\""
 docker_shell_no_user = "docker run -a stdout -a stderr " + docker_args
 docker_shell =  docker_shell_no_user + " " + docker_user
