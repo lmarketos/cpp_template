@@ -1,0 +1,5 @@
+gcc-13.2.0.tar.gz 
+/gcc-13.2.0/*
+/llvm-project/*
+!/llvm-project/build/*
+
