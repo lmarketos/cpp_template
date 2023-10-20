@@ -109,7 +109,7 @@ docker_shell_no_user = "docker run -a stdout -a stderr " + docker_args
 docker_shell =  docker_shell_no_user + " " + docker_user
 
 make_command = "make && make install\""
-compiler = "clang++"
+compiler = "g++"
 compile_command = "/bin/bash -c \"mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=.. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_STANDARD=23 -DCMAKE_CXX_FLAGS=\"-O3\" -DCMAKE_CXX_COMPILER="
 
 if __name__ == "__main__":
