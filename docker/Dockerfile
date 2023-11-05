@@ -14,6 +14,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     neovim \
     cppcheck \
     python3 \
+    python3-pip \
     wget \
     git \
     libmpfr-dev \
@@ -42,3 +43,5 @@ RUN git clone https://github.com/google/googletest.git && \
   cp -r /googletest/googletest/include/gtest /usr/local/include/gtest && \
   mkdir /usr/local/lib/gtest; cp -r /googletest/build/lib/libgtest*.a /usr/local/lib/gtest/ && \
   mkdir /usr/local/lib/gmock; cp -r /googletest/build/lib/libgmock*.a /usr/local/lib/gmock/
+
+  RUN pip install conan --break-system-packages && conan profile detect && chmod -R 777 /root
