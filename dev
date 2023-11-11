@@ -20,7 +20,7 @@ def run(cmd):
     subprocess.run(cmd, shell=True,check=False,executable='/bin/bash')
 
 def run_docker(cmd):
-    run(docker_shell + " " + cmd)
+    run(docker_shell + " " + " ".join(str(x) for x in custom_command))
 
 def test(cmd):
     command = "/bin/bash -c \"cd build && ctest\""
@@ -109,12 +109,24 @@ def main() :
     sp_test = sp.add_parser('test', help='Run the unit tests for the project')
     sp_test.set_defaults(func=test)
 
+    sp_run = sp.add_parser('run', help='Run a command inside the docker')
+    sp_run.set_defaults(func=run_docker)
+
+    global custom_command
+    sp_run.add_argument('command', nargs=1, help='Command to run in docker')
+
     global custom_docker
     parser.add_argument('docker', nargs='?', help='Optional target docker to use; default is ' + custom_docker)
+
     args = parser.parse_args()
 
     if args.docker:
         custom_docker = args.docker
+
+    if args.command:
+        custom_command = args.command
+
+    print("command: " + " ".join(str(x) for x in custom_command))
 
     global docker_shell
     docker_shell = docker_shell + " " + custom_docker
