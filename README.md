@@ -12,6 +12,7 @@ Build the docker image used to compile the application and run analysis tools
 **This command must run successfully before any of the other commands will work**
 ```
 ./dev build_docker
+./dev build_custom_docker
 ```
 Build the sample application. Note that the docker mounts the root dir of the repo so files are never copied into the build docker. You can edit your source locally in the repo
 ```
