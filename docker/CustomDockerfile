@@ -1,0 +1,6 @@
+FROM lmarketos/cpp-core:0.1
+
+ENV HOME /root
+
+SHELL ["/bin/bash", "-c"]
+
