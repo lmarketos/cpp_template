@@ -1,5 +1,24 @@
 FROM gcc:latest as GCC 
 
+FROM ubuntu:23.10 as CLANG
+ENV HOME /root/
+
+RUN apt-get update && apt-get -y --no-install-recommends install \
+    build-essential \
+    cmake \
+    clang \
+    python3 \
+    python3-pip \
+    wget \
+    git \
+    libmpfr-dev \
+    libgmp3-dev \
+    libmpc-dev \
+    ca-certificates
+
+RUN git clone --depth 1 https://github.com/llvm/llvm-project.git
+RUN cd llvm-project && cmake -S llvm -B build && cmake --build build
+
 FROM ubuntu:23.10 as FINAL
 LABEL Description="C++ Build Environment with support tools"
 
