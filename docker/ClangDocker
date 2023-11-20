@@ -15,5 +15,5 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates
 
 RUN git clone --depth 1 https://github.com/llvm/llvm-project.git
-RUN cd llvm-project && cmake -S llvm -B build -DCMAKE_BUILD_TYPE=Release 
+RUN cd llvm-project && cmake -S llvm -B build -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" 
 RUN cd llvm-project && cmake --build build --config Release

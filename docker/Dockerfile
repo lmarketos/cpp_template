@@ -19,6 +19,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 RUN git clone --depth 1 https://github.com/llvm/llvm-project.git
 RUN cd llvm-project && cmake -S llvm -B build && cmake --build build
 
+FROM lmarketos/clang_test as CLANG
+
 FROM ubuntu:23.10 as FINAL
 LABEL Description="C++ Build Environment with support tools"
 
@@ -63,4 +65,11 @@ RUN git clone https://github.com/google/googletest.git && \
   mkdir /usr/local/lib/gtest; cp -r /googletest/build/lib/libgtest*.a /usr/local/lib/gtest/ && \
   mkdir /usr/local/lib/gmock; cp -r /googletest/build/lib/libgmock*.a /usr/local/lib/gmock/
 
-  RUN pip install conan --break-system-packages && conan profile detect && chmod -R 777 /root
+RUN pip install conan --break-system-packages && conan profile detect && chmod -R 777 /root
+
+RUN mkdir /lib/llvm-16
+COPY --from=CLANG /lib/llvm-16 /lib/llvm-16
+COPY --from=CLANG /usr/lib/x86_64-linux-gnu/lib* /usr/lib/x86_64-linux-gnu
+COPY --from=CLANG /llvm-project/build/bin/* /usr/local/bin/
+RUN ln -s /lib/llvm-16/bin/clang /usr/bin/clang && \
+  ln -s /lib/llvm-16/bin/clang++ /usr/bin/clang++
