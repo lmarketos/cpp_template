@@ -1,0 +1,9 @@
+FROM lmarketos/cpp-dev-env:0.2
+ARG REMOTE_USER
+ARG REMOTE_UID
+ARG REMOTE_GID
+
+
+ ENV HOME=/home/${REMOTE_USER}
+
+#  USER ${REMOTE_USER}

@@ -20,6 +20,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     libmpfr-dev \
     libgmp3-dev \
     libmpc-dev \
+    libboost-all-dev \
     ca-certificates
 
 COPY --from=GCC /usr/local/bin /usr/bin

@@ -1,0 +1,14 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "REMOTE_USER": "${localEnv:USER}",
+      "REMOTE_UID": "${localEnv:UID}",
+      "REMOTE_GID": "${localEnv:GROUPS}"
+    }
+  },
+
+
+
+
+}
