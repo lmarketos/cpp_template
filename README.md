@@ -18,14 +18,14 @@ Build the sample application. Note that the docker mounts the root dir of the re
 ```
 ./dev build
 ```
-Run the sample application
-```
-./bin/HelloWorld
-```    
 Run a bash shell in the build docker
 ```
 ./dev shell
 ```
+Run the sample application (probably needs to be run from the docker shell vs the host shell)f
+```
+./bin/HelloWorld
+```    
 For a complete list of options
 ```
 ./dev -h
